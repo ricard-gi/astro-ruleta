@@ -1,0 +1,42 @@
+---
+import Layout2 from "../layouts/Layout2.astro";
+
+let gameData; // inicialitzem la variable gameData
+
+let cookie = Astro.cookies.get("ruleta");
+gameData = JSON.parse(cookie.value); // ull! el valor està a .value
+
+
+---
+
+<Layout2>
+
+	<h1>Jugades anteriors</h1>
+
+	<a href="/neteja">Neteja historial</a>
+	<br />
+	<br />
+	<table class="table">
+		<thead>
+			<tr>
+				<th>Data</th>
+				<th>Jugada</th>
+				<th>Ruleta</th>
+				<th>Saldo</th>
+			</tr>
+			<tbody>
+				{
+					gameData.map((jugada) => (
+						<tr>
+							<td>{jugada.data}</td>
+							<td>{jugada.jugada}</td>
+							<td>{jugada.ruleta}</td>
+							<td>{jugada.saldo}</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</thead>
+		
+	</table>
+</Layout2>

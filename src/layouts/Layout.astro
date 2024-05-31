@@ -1,4 +1,10 @@
 ---
+import Zona from "../components/Zona.astro"
+
+if (!Astro.cookies.has("ruleta")) {
+	Astro.cookies.set("ruleta", "[]", { path: "/" });
+	return Astro.redirect("/");
+}
 
 ---
 
@@ -16,9 +22,72 @@
 
 		<h1>Astro RULETA</h1>
         <hr>
+
+		<h1>Tria la teva jugada</h1>
+
+		<div class="row">
+			<div class="col col-12">
+				<Zona valor="0"	/>
+			</div>
+			<div class="col col-4">
+				<Zona valor="1"	/>
+			</div>
+			<div class="col col-4">
+				<Zona valor="2"	/>
+			</div>
+			<div class="col col-4">
+				<Zona valor="3"	/>
+			</div>
+			<div class="col col-4">
+				<Zona valor="4"	/>
+			</div>
+			<div class="col col-4">
+				<Zona valor="5"	/>
+			</div>
+			<div class="col col-4">
+				<Zona valor="6"	/>
+			</div>
+			<div class="col col-4">
+				<Zona valor="7"	/>
+			</div>
+			<div class="col col-4">
+				<Zona valor="8"	/>
+			</div>
+			<div class="col col-4">
+				<Zona valor="9"	/>
+			</div>
+			<div class="col col-4">
+			</div>
+			<div class="col col-4">
+				<Zona valor="10"	/>
+			</div>
+	
+	
+		</div>
+	
+		<div class="row">
+			<div class="col-6">
+				<Zona valor="parell" />
+			</div>
+			<div class="col-6">
+				<Zona valor="imparell" />
+			</div>
+			<div class="col-6">
+				<Zona valor="negre" />
+			</div>
+			<div class="col-6">
+				<Zona valor="vermell" />
+			</div>
+		</div>
+		
+	
         <main >
             <slot />
 		</main>
+
+
+		<hr>
+		<a href="/historial">Historial de jugades</a>
 	</div>
 
 		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>

@@ -46,10 +46,12 @@ function calculaJugada(jugada, numeroRuleta) {
 function updateCookie(jugada, ruleta, resultat) {
     let cookie = Astro.cookies.get("ruleta");
     let cookieData = JSON.parse(cookie.value);
-    let saldo = cookieData.length? cookieData[cookieData.length - 1].saldo : 150;
+    let saldo = cookieData.length ? cookieData[cookieData.length - 1].saldo : 150;
+    saldo *= 1;
     saldo += resultat;
     cookieData.push({ data: getCurrentDate(), jugada, ruleta, saldo });
     Astro.cookies.set("ruleta", JSON.stringify(cookieData), { path: "/" });
+    return saldo;
 }
 
 // llegim de la URL la jugada que ha fet l'usuari: valors possibles PEDRA, PAPER, TISORA
@@ -60,17 +62,28 @@ const numeroRuleta = jugadaRandom();
 const resultat = calculaJugada(jugada, numeroRuleta);
 
 // actualitzem la cookie amb la nova jugada
-updateCookie(jugada, numeroRuleta, resultat);
+let saldo = updateCookie(jugada, numeroRuleta, resultat);
 
 // html mostra el resultat de la jugada i permet tornars a la pàgina principal
 ---
 
 <Layout>
-    <h1>Resultat de la jugada</h1>
+    <div class="row">
+        <div class="col">
+            Jugada: {jugada}
+        </div>
+        <div class="col">
+            Numero ruleta: {numeroRuleta}
+        </div>
+        <div class="col">
+            {resultat > 0 ? `Guanyes ${resultat}!!!` : `Perds ${resultat*-1}...`}
+        </div>
+        <div class="col">
+            Saldo: {saldo}
+        </div>
+    </div>
 
-    <h2>Jugada: {jugada}</h2>
-    <h2>Numero ruleta: {numeroRuleta}</h2>
-    <h2>Resultat: {resultat}</h2>
+
 
     <br />
     <a href="/">Tornar</a>
