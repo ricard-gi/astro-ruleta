@@ -1,16 +1,121 @@
 ---
+import Layout from "../layouts/Layout.astro";
+import Zona from "../components/Zona.astro";
 
+let gameData; // inicialitzem la variable gameData
+
+// si NO existeix la cookie "ruleta", la creem i recarreguem la pàgina
+if (Astro.cookies.has("ruleta")) {
+	//si existeix la cookie "ruleta", la parsem a JSON i la guardam en la variable gameData
+	let cookie = Astro.cookies.get("ruleta");
+	gameData = JSON.parse(cookie.value); // ull! el valor està a .value
+} else {
+	Astro.cookies.set("ruleta", "[]", { path: "/" });
+	return Astro.redirect("/");
+}
+
+// calculem el percentatge de jugades guanyadores
+let percentatgeGuanyador = 0;
+if (gameData.length) {
+	percentatgeGuanyador =
+		(gameData.filter((item) => item.resultat === "Guanyador").length /
+			gameData.length) *
+		100;
+}
+
+// la pàgina mostra links a les jugades, un botó per netejar l'historial de jugades, i la llista de jugades fetes
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout>
+	<h1>Tria la teva jugada</h1>
+
+	<div class="row">
+		<div class="col col-12">
+			<Zona valor="0"	/>
+		</div>
+		<div class="col col-4">
+			<Zona valor="1"	/>
+		</div>
+		<div class="col col-4">
+			<Zona valor="2"	/>
+		</div>
+		<div class="col col-4">
+			<Zona valor="3"	/>
+		</div>
+		<div class="col col-4">
+			<Zona valor="4"	/>
+		</div>
+		<div class="col col-4">
+			<Zona valor="5"	/>
+		</div>
+		<div class="col col-4">
+			<Zona valor="6"	/>
+		</div>
+		<div class="col col-4">
+			<Zona valor="7"	/>
+		</div>
+		<div class="col col-4">
+			<Zona valor="8"	/>
+		</div>
+		<div class="col col-4">
+			<Zona valor="9"	/>
+		</div>
+		<div class="col col-4">
+		</div>
+		<div class="col col-4">
+			<Zona valor="10"	/>
+		</div>
+
+
+	</div>
+
+	<div class="row">
+		<div class="col-6">
+			<Zona valor="parell" />
+		</div>
+		<div class="col-6">
+			<Zona valor="imparell" />
+		</div>
+		<div class="col-6">
+			<Zona valor="negre" />
+		</div>
+		<div class="col-6">
+			<Zona valor="vermell" />
+		</div>
+	</div>
+	
+
+	<hr />
+	<h1>Jugades anteriors</h1>
+
+	<a href="/neteja">Neteja historial</a>
+	<br />
+	<br />
+	<table>
+		<thead>
+			<tr>
+				<th>Data</th>
+				<th>Jugada</th>
+				<th>Ruleta</th>
+				<th>Saldo</th>
+			</tr>
+			<tbody>
+				{
+					gameData.map((jugada) => (
+						<tr>
+							<td>{jugada.data}</td>
+							<td>{jugada.jugada}</td>
+							<td>{jugada.ruleta}</td>
+							<td>{jugada.saldo}</td>
+						</tr>
+					))
+				}
+			</tbody>
+		</thead>
+		{
+			percentatgeGuanyador && (
+				<p>Partides guanyades: {percentatgeGuanyador.toFixed(2)}%</p>
+			)
+		}
+	</table>
+</Layout>
