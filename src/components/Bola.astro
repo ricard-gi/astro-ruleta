@@ -1,0 +1,41 @@
+---
+
+
+const {valor, mida} = Astro.props;
+let colorDeFons = "";
+if (valor==0){
+    colorDeFons="green";
+} else if ([1, 3, 6, 8, 9].includes(valor)) {
+    colorDeFons="red";
+} else if ( [2, 4, 5, 7, 10].includes(valor)){
+    colorDeFons = "black"
+} else {
+    colorDeFons = "blue"
+}
+          
+let midaText = Math.floor(mida*0.7) + 'px';
+let midaBola = mida + 'px'
+---
+<style  define:vars={{midaBola, midaText}}>
+
+
+div  {
+    width: var(--midaBola);
+    height: var(--midaBola);
+    text-align: center;
+    line-height: var(--midaBola);
+    font-size: var(--midaText);
+    color: white;
+    font-weight: normal;
+    border-radius: var(--midaBola);
+    margin: auto;
+    margin-bottom:10px;
+}
+
+
+</style>
+
+
+<div style={`background-color: ${colorDeFons};`} >
+    {valor}
+</div>

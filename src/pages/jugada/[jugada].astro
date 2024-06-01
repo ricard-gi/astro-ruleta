@@ -1,8 +1,8 @@
 ---
-import Layout from "../../layouts/Layout.astro";
 
-// funció que retorna la data actual en format any, mes, dia, mm, ss
-function getCurrentDate() {
+
+// funció que retorna la hora actual en format hh:mm:ss
+function getCurrentTime() {
     const date = new Date();
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are zero-based
@@ -11,7 +11,7 @@ function getCurrentDate() {
     const mins = String(date.getMinutes()).padStart(2, "0");
     const secs = String(date.getSeconds()).padStart(2, "0");
 
-    return `${year}-${month}-${day} ${hours}:${mins}:${secs}`;
+    return `${hours}:${mins}:${secs}`;
 }
 
 // funció que retorna una jugada random
@@ -49,9 +49,10 @@ function updateCookie(jugada, ruleta, resultat) {
     let saldo = cookieData.length ? cookieData[cookieData.length - 1].saldo : 150;
     saldo *= 1;
     saldo += resultat;
-    cookieData.push({ data: getCurrentDate(), jugada, ruleta, saldo });
-    Astro.cookies.set("ruleta", JSON.stringify(cookieData), { path: "/" });
-    return saldo;
+    let afegim = { jugada, ruleta, saldo }
+    cookieData.push(afegim);
+    let x = Astro.cookies.set("ruleta", JSON.stringify(cookieData), { path: "/" });
+    console.log("xook: ", afegim, cookieData.length)
 }
 
 // llegim de la URL la jugada que ha fet l'usuari: valors possibles PEDRA, PAPER, TISORA
@@ -62,30 +63,10 @@ const numeroRuleta = jugadaRandom();
 const resultat = calculaJugada(jugada, numeroRuleta);
 
 // actualitzem la cookie amb la nova jugada
-let saldo = updateCookie(jugada, numeroRuleta, resultat);
-console.log('---'+jugada+'---'+numeroRuleta+'---'+resultat+'---'+saldo);
+updateCookie(jugada, numeroRuleta, resultat);
+console.log(`---${jugada}---${numeroRuleta}---${resultat}`)
 
-// html mostra el resultat de la jugada i permet tornars a la pàgina principal
+//tornem a /
+return Astro.redirect("/");
+
 ---
-
-<Layout>
-    <div class="row">
-        <div class="col">
-            Jugada: {jugada}
-        </div>
-        <div class="col">
-            Numero ruleta: {numeroRuleta}
-        </div>
-        <div class="col">
-            {resultat > 0 ? `Guanyes ${resultat}!!!` : `Perds ${resultat*-1}...`}
-        </div>
-        <div class="col">
-            Saldo: {saldo}
-        </div>
-    </div>
-
-
-
-    <br />
-    <a href="/">Tornar</a>
-</Layout>

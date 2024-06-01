@@ -1,8 +1,51 @@
 ---
 
 
-const {valor} = Astro.props;
+const {valor, jugada} = Astro.props;
+let color = "";
+if (valor=="0"){
+    color="green";
+} else if (["1", "3", "6", "8", "9", "vermell"].includes(valor)) {
+    color="red";
+} else if ( ["2", "4", "5", "7", "10", "negre"].includes(valor)){
+    color = "black"
+} else {
+    color = "blue"
+}
+console.log(jugada, valor)
+let extraClass = ""
+if (jugada==valor){
+    extraClass = "triat"
+}
 
 ---
+<style>
 
-<a href={"/jugada/"+valor}>{valor}</a>
+a div {
+    width: 100%;
+    padding: 10px;
+    text-align: center;
+    font-size: 2em;
+    color: white;
+    font-weight: bold;
+    margin-bottom: 15px;
+    border: 4px solid white;
+}
+
+a div.triat {
+    border: 4px dashed white;
+    border-radius: 40px;
+
+}
+
+a  {
+    text-decoration: none;
+}
+
+</style>
+
+<a href={"/jugada/"+valor}>
+<div class={extraClass} style={`background-color: ${color};`} >
+    {valor}
+</div>
+</a>
