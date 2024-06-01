@@ -1,23 +1,9 @@
 ---
 import Layout from "../layouts/Layout.astro";
-import Zona from "../components/Zona.astro";
-
-let gameData; // inicialitzem la variable gameData
-
-// si NO existeix la cookie "ruleta", la creem i recarreguem la pàgina
-if (Astro.cookies.has("ruleta")) {
-	//si existeix la cookie "ruleta", la parsem a JSON i la guardam en la variable gameData
-	let cookie = Astro.cookies.get("ruleta");
-	gameData = JSON.parse(cookie.value); // ull! el valor està a .value
-} else {
-	Astro.cookies.set("ruleta", "[]", { path: "/" });
-	return Astro.redirect("/");
-}
 
 
-// la pàgina mostra links a les jugades, un botó per netejar l'historial de jugades, i la llista de jugades fetes
 ---
 
 <Layout>
-
+	<h1>Fes la teva aposta!</h1>
 </Layout>
