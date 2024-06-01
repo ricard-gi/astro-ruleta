@@ -1,6 +1,6 @@
 ---
 // netegem la cookie i recarreguem la pàgina index
-Astro.cookies.set("ruleta", '[]', { path: '/' });
+Astro.cookies.delete("ruleta");
 return Astro.redirect('/');
 
 ---

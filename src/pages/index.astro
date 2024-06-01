@@ -1,21 +1,25 @@
 ---
 import Zona from "../components/Zona.astro";
 import Bola from "../components/Bola.astro";
+import calculaJugada from './calculaJugada.js';
 
 let gameData = [];
 if (Astro.cookies.has("ruleta")) {
 	let cookie = Astro.cookies.get("ruleta");
 	gameData = JSON.parse(cookie.value); // ull! el valor està a .value
 } else {
-	Astro.cookies.set("ruleta", "[]", { path: "/" });
+	let ob = {saldo:150, boles: [], apostes: []}
+	Astro.cookies.set("ruleta", JSON.stringify(ob), { path: "/" });
 	return Astro.redirect("/");
 }
 
-let jugades = gameData.length ? gameData.map(e => e.ruleta) : [];
+let {boles, apostes, saldo} = gameData;
 
-let {data, jugada, ruleta,resultat,  saldo} = gameData.length ? gameData[gameData.length - 1] : {data:0,jugada:0,ruleta:0,saldo:0, resultat:0};
+let aposta = apostes[0]
 
-console.log(jugades)
+let increment = 0;
+if (aposta) increment = calculaJugada(aposta, boles[0])
+
 
 ---
 
@@ -31,46 +35,46 @@ console.log(jugades)
 	<body>
         <div class="container">
 
-		<h1>Astro RULETA</h1>
+		<h1 class="text-center">Astro RULETA</h1>
         <hr>
 
 		<div class="row">
 			<div class="col">
 				<div class="row">
 					<div class="col col-12">
-						<Zona jugada={jugada} valor="0"	/>
+						<Zona saldo={saldo} aposta={aposta} valor="0"	/>
 					</div>
 					<div class="col col-4">
-						<Zona jugada={jugada} valor="1"	/>
+						<Zona saldo={saldo} aposta={aposta} valor="1"	/>
 					</div>
 					<div class="col col-4">
-						<Zona jugada={jugada} valor="2"	/>
+						<Zona saldo={saldo} aposta={aposta} valor="2"	/>
 					</div>
 					<div class="col col-4">
-						<Zona jugada={jugada} valor="3"	/>
+						<Zona saldo={saldo} aposta={aposta} valor="3"	/>
 					</div>
 					<div class="col col-4">
-						<Zona jugada={jugada} valor="4"	/>
+						<Zona saldo={saldo} aposta={aposta} valor="4"	/>
 					</div>
 					<div class="col col-4">
-						<Zona jugada={jugada} valor="5"	/>
+						<Zona saldo={saldo} aposta={aposta} valor="5"	/>
 					</div>
 					<div class="col col-4">
-						<Zona jugada={jugada} valor="6"	/>
+						<Zona saldo={saldo} aposta={aposta} valor="6"	/>
 					</div>
 					<div class="col col-4">
-						<Zona jugada={jugada} valor="7"	/>
+						<Zona saldo={saldo} aposta={aposta} valor="7"	/>
 					</div>
 					<div class="col col-4">
-						<Zona jugada={jugada} valor="8"	/>
+						<Zona saldo={saldo} aposta={aposta} valor="8"	/>
 					</div>
 					<div class="col col-4">
-						<Zona jugada={jugada} valor="9"	/>
+						<Zona saldo={saldo} aposta={aposta} valor="9"	/>
 					</div>
 					<div class="col col-4">
 					</div>
 					<div class="col col-4">
-						<Zona jugada={jugada} valor="10"	/>
+						<Zona saldo={saldo} aposta={aposta} valor="10"	/>
 					</div>
 			
 			
@@ -78,40 +82,52 @@ console.log(jugades)
 			
 				<div class="row">
 					<div class="col-6">
-						<Zona jugada={jugada} valor="parell" />
+						<Zona saldo={saldo} aposta={aposta} valor="parell" />
 					</div>
 					<div class="col-6">
-						<Zona jugada={jugada} valor="imparell" />
+						<Zona saldo={saldo} aposta={aposta} valor="imparell" />
 					</div>
 					<div class="col-6">
-						<Zona jugada={jugada} valor="negre" />
+						<Zona saldo={saldo} aposta={aposta} valor="negre" />
 					</div>
 					<div class="col-6">
-						<Zona jugada={jugada} valor="vermell" />
+						<Zona saldo={saldo} aposta={aposta} valor="vermell" />
 					</div>
 				</div>
 				
 			</div>
 			<div class="col">
 				{
-					jugades.length ? (
+					boles.length ? (
 						<div>
 							<div class="text-center">
-								<Bola valor={ruleta} mida={80}/>
+								<Bola valor={boles[0]} mida={80}/>
 							</div>
 							<br>
 							<div class="row">
 
-							{jugades.reverse().slice(1,).map( e => <div class="col-1"><Bola valor={e} mida={40}/></div>)}
+							{boles.slice(1,).map( e => <div class="col-1"><Bola valor={e} mida={40}/></div>)}
 							</div>
 							<br />
 							<br />
 				
-							 	<h1 class="text-center">{saldo}€</h2> 
+							 	<h1 class="text-center">Saldo: {saldo}€ ({increment})</h1> 
+							
 						
 						</div>
 						)
 						: null
+				}
+				{
+					(saldo < 0 || saldo == 0) ? 
+					(
+					<h1 class="text-danger text-center">GAME OVER</h1>
+					<p class="text-center">
+		<a  href="/neteja">Reiniciar</a>
+		</p>
+					)
+					:
+					null
 				}
 
 			</div>
@@ -119,9 +135,10 @@ console.log(jugades)
 
 
 		<hr>
-		<a href="/historial">Historial de jugades</a>
+		<p class="text-center">
+		<a  href="/historial">Historial de jugades</a>
+		</p>
 	</div>
 
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 	</body>
 </html>
